@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-    // currency global variables
+// currency global variables
     let
         moneySpanSelector = 'span.money',
         currencyPickerSelector = '[name=currencies]',
@@ -88,4 +88,168 @@ $(document).ready(function() {
     }
 
     currencyPicker.init()
+
+// add to cart form
+    let
+    addToCartFormSelector = "#add-to-cart-form",
+    productOptionSelector = addToCartFormSelector + ' [name*=option]'
+
+    let productForm = {
+        onProductOptionChanged: function(event) {
+            let
+                $form = $(this).closest(addToCartFormSelector),
+                selectedVariant = productForm.getActiveVariant($form)
+
+                $form.trigger('form:change', [selectedVariant])
+        },
+        getActiveVariant: function($form) {
+            let
+            variants = JSON.parse(decodeURIComponent($form.attr('data-variants')))
+            formData = $form.serializeArray()
+            formOptions = {
+                option1: null,
+                option2: null,
+                option3: null
+            },
+            selectedVariant = null
+
+            $.each(formData, function (index, item) {
+                if (item.name.indexOf('option') != -1) {
+                    formOptions[item.name] = item.value
+                }
+            })
+
+            $.each(variants, function(index, variant) {
+                if (variant.option1 === formOptions.option1 && variant.option2 === formOptions.option2 && variant.option3 === formOptions.option3) {
+                    selectedVariant = variant
+                    return false
+                }
+            })
+            
+            return selectedVariant
+       
+        },
+        validate: function(event, selectedVariant) {
+           let
+           $form = $(this),
+           hasVariant = selectedVariant != null,
+           canAddToCart = hasVariant && selectedVariant.inventory_quantity > 0,
+           $id = $form.find('.js-variant-id'),
+           $addtoCartButton = $form.find('#add-to-cart-button'),
+           $price = $form.find('.js-price'),
+           formattedVariantPrice,
+           priceHtml
+
+           if (hasVariant) {
+               formattedVariantPrice = '$' + (selectedVariant.price/100).toFixed(2)
+               priceHtml = '<span class="money">'+formattedVariantPrice+'</span>'
+               window.history.replaceState(null, null, '?variant='+selectedVariant.id)
+           } else {
+               priceHtml = $price.attr('data-default-price')
+           }
+
+          if (canAddToCart) {
+              $id.val(selectedVariant.id)
+              $addtoCartButton.prop('disabled', false)
+          } else {
+              $id.val('')
+              $addtoCartButton.prop('disabled', true)
+          }
+
+          $price.html(priceHtml)
+          currencyPicker.onMoneySpanAdded()
+        },
+        init: function() {
+            $(document).on('change', productOptionSelector, productForm.onProductOptionChanged)
+            $(document).on('form:change', addToCartFormSelector, productForm.validate)
+        }
+    }
+
+    productForm.init()
+
+// ajax api functionality
+  let ajaxify = {
+    onAddToCart: function(event) {
+      event.preventDefault();
+
+      $.ajax({
+        type: 'POST',
+        url: '/cart/add.js',
+        data: $(this).serialize(),
+        dataType: 'json',
+        success: ajaxify.onCartUpdated,
+        error: ajaxify.onError
+      });
+    },
+    onLineRemoved: function(event) {
+        event.preventDefault()
+
+        let
+            $removeLink = $(this),
+            removeQuery = $removeLink.attr('href').split('change?')[1]
+        $.post('/cart/change.js', removeQuery, ajaxify.onCartUpdated, 'json')
+    },
+    onCartUpdated: function() {
+      console.log('cart is updated')
+      $.ajax({
+        type: 'GET',
+        url: '/cart',
+        context: document.body,
+        success: function(context) {
+          let
+            $dataCartContents = $(context).find('.js-cart-page-contents'),
+            dataCartHtml = $dataCartContents.html(),
+            dataCartItemCount = $dataCartContents.attr('data-cart-item-count'),
+            $miniCartContents = $('.js-mini-cart-contents'),
+            $cartItemCount = $('.js-cart-item-count');
+
+          $cartItemCount.text(dataCartItemCount);
+          $miniCartContents.html(dataCartHtml);
+          currencyPicker.onMoneySpanAdded();
+
+          if (parseInt(dataCartItemCount) > 0) {
+            ajaxify.openCart();
+          }
+          else {
+            ajaxify.closeCart();
+          }
+        }
+      });
+    },
+    onError: function(XMLHttpRequest, textStatus) {
+      let data = XMLHttpRequest.responseJSON;
+      alert(data.status + ' - ' + data.message + ': ' + data.description);
+    },
+    onCartButtonClick: function(event) {
+        let
+          isCartOpen = $('html').hasClass('mini-cart-open'),
+          isInCart = window.location.href.indexOf('/cart') !== -1;
+  
+        if (!isInCart) {
+          event.preventDefault();
+          if (!isCartOpen) {
+            ajaxify.openCart();
+          }
+          else {
+            ajaxify.closeCart();
+          }
+        }
+      },
+    openCart: function() {
+        $('html').addClass('mini-cart-open')
+    },
+    closeCart: function() {
+        $('html').removeClass('mini-cart-open')
+    },
+    init: function() {
+      $(document).on('submit', addToCartFormSelector, ajaxify.onAddToCart)
+
+      $(document).on('click', '#mini-cart .js-remove-line', ajaxify.onLineRemoved)
+
+      $(document).on('click', '.js-cart-link', ajaxify.onCartButtonClick)
+    }
+  };
+
+  ajaxify.init()
+
 })
