@@ -168,6 +168,7 @@ $(document).ready(function() {
     productForm.init()
 
 // ajax api functionality
+  let miniCartContentsSelector = '.js-mini-cart-contents'
   let ajaxify = {
     onAddToCart: function(event) {
       event.preventDefault();
@@ -181,16 +182,12 @@ $(document).ready(function() {
         error: ajaxify.onError
       });
     },
-    onLineRemoved: function(event) {
-        event.preventDefault()
-
-        let
-            $removeLink = $(this),
-            removeQuery = $removeLink.attr('href').split('change?')[1]
-        $.post('/cart/change.js', removeQuery, ajaxify.onCartUpdated, 'json')
-    },
     onCartUpdated: function() {
-      console.log('cart is updated')
+        let
+            $miniCartFieldset = $(miniCartContentsSelector + '.js-cart-fieldset')
+
+        $miniCartFieldset.prop('disabled', true)
+        
       $.ajax({
         type: 'GET',
         url: '/cart',
@@ -200,7 +197,7 @@ $(document).ready(function() {
             $dataCartContents = $(context).find('.js-cart-page-contents'),
             dataCartHtml = $dataCartContents.html(),
             dataCartItemCount = $dataCartContents.attr('data-cart-item-count'),
-            $miniCartContents = $('.js-mini-cart-contents'),
+            $miniCartContents = $(miniCartContentsSelector),
             $cartItemCount = $('.js-cart-item-count');
 
           $cartItemCount.text(dataCartItemCount);
@@ -244,12 +241,126 @@ $(document).ready(function() {
     init: function() {
       $(document).on('submit', addToCartFormSelector, ajaxify.onAddToCart)
 
-      $(document).on('click', '#mini-cart .js-remove-line', ajaxify.onLineRemoved)
-
       $(document).on('click', '.js-cart-link', ajaxify.onCartButtonClick)
     }
   };
 
   ajaxify.init()
+
+//   quantity picker fields
+let
+    quantityFieldSelector = '.js-quantity-field',
+    quantityButtonSelector = '.js-quantity-button'
+    quantityPickerSelector = '.js-quantity-picker',
+    quantityPicker = {
+        onButtonClick: function(event) {
+            // alert('button clicked')
+            let
+            $button = $(this),
+            $picker = $button.closest(quantityPickerSelector),
+            $quantity = $picker.find('.js-quantity-field'),
+            quantityValue = parseInt($quantity.val()),
+            max = $quantity.attr('max') ? parseInt($quantity.attr('max')) : null
+    
+            if ($button.hasClass('plus') && (max === null || quantityValue+1 <= max)) {
+                $quantity.val(quantityValue + 1).change()
+            } else if ($button.hasClass('minus')) {
+                $quantity.val(quantityValue - 1).change()
+            }
+        },
+        onChange: function(event) {
+            let
+            $field = $(this),
+            $picker = $field.closest(quantityPickerSelector),
+            $quantityText = $picker.find('.js-quantity-text'),
+            shouldDisableMinus = parseInt(this.value) === parseInt($field.attr('min')),
+            shouldDisablePlus = parseInt(this.value) === parseInt($field.attr('max')),
+            $minusButton = $picker.find('.js-quantity-button.minus'),
+            $plusButton = $picker.find('.js-quantity-button.plus')
+    
+    
+            $quantityText.text(this.value)
+    
+            if (shouldDisableMinus) {
+                $minusButton.prop('disabled', true)
+            } else if ($minusButton.prop('disabled') === true) {
+                $minusButton.prop('disabled', false)
+            }
+    
+            if (shouldDisablePlus) {
+                $plusButton.prop('disabled', true)
+            } else if ($minusButton.prop('disabled') === true) {
+                $plusButton.prop('disabled', false)
+            }
+        },
+        init: function() {
+            $(document).on('click', quantityButtonSelector, quantityPicker.onButtonClick)
+            $(document).on('change', quantityFieldSelector, quantityPicker.onChange)
+        }
+    }
+
+    quantityPicker.init()
+
+    // line item
+    let
+                removeLineSelector = '.js-remove-line',
+                lineQuantitySelector = '.js-line-quantity'
+        let lineItem = {
+            isInMiniCart: function(element) {
+                $element = $(element),
+                $miniCart = $element.closest(miniCartContentsSelector),
+                isInMiniCart = $miniCart.length !== 0
+
+                return isInMiniCart
+            },
+            onLineQuantityChanged: function(event) {
+                let
+                    quantity = this.value,
+                    id = $(this).attr('id').replace('updates_', '')
+                    changes = {
+                        quantity: quantity,
+                        id: id
+                    }
+                    let isInMiniCart = lineItem.isInMiniCart(this)
+                    $.post('/cart/change.js', changes, ajaxify.onCartUpdated, 'json')
+                    if (isInMiniCart) {
+
+                    }
+            },
+            onLineRemoved: function(event) {
+                let isInMiniCart = lineItem.isInMiniCart(this)
+
+                if (isInMiniCart) {
+                event.preventDefault()
+        
+                let
+                    $removeLink = $(this),
+                    removeQuery = $removeLink.attr('href').split('change?')[1]
+                $.post('/cart/change.js', removeQuery, ajaxify.onCartUpdated, 'json')
+                }
+            },
+            init: function() {
+                $(document).on('click', removeLineSelector, lineItem.onLineRemoved)
+                $(document).on('change', lineQuantitySelector, lineItem.onLineQuantityChanged)
+            }
+        }
+
+        lineItem.init()
+
+// search input
+let
+        searchInputSelector = '.js-search-input',
+        searchSubmitSelector = '.js-search-submit',
+        onSearchInputKeyup = function(event) {
+            let
+                $form = $(this).closest('form'),
+                $button = $form.find(searchSubmitSelector),
+                shouldDisableButton = this.value.length == 0
+
+            $button.prop('disabled', shouldDisableButton)
+
+        }
+
+        $(document).on('keyup', searchInputSelector, onSearchInputKeyup)
 
 })
