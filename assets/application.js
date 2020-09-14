@@ -315,18 +315,18 @@ let
             },
             onLineQuantityChanged: function(event) {
                 let
-                    quantity = this.value,
-                    id = $(this).attr('id').replace('updates_', '')
-                    changes = {
-                        quantity: quantity,
-                        id: id
-                    }
-                    let isInMiniCart = lineItem.isInMiniCart(this)
-                    $.post('/cart/change.js', changes, ajaxify.onCartUpdated, 'json')
-                    if (isInMiniCart) {
-
-                    }
-            },
+                  quantity = this.value,
+                  id = $(this).attr('id').replace('updates_', ''),
+                  changes = {
+                    quantity: quantity,
+                    id: id
+                  },
+                  isInMiniCart = lineItem.isInMiniCart(this);
+          
+                if (isInMiniCart) {
+                  $.post('/cart/change.js', changes, ajaxify.onCartUpdated, 'json');
+                }
+              },
             onLineRemoved: function(event) {
                 let isInMiniCart = lineItem.isInMiniCart(this)
 

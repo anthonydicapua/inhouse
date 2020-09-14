@@ -15,10 +15,16 @@
             </span>
             {% endif %}
           </a>
+          <p>
           {{ item.variant.title }}
+        </p>
         </div>
+
         <div class="line-price">
-          {{ item.line_price | money }}{% if item.quantity > 1 %} ({{ item.price | money }}/ea){% endif %}
+          {{ item.line_price | money }}
+          {% if item.quantity > 1 %}
+          ({{ item.price | money }}/ea)
+          {% endif %}
         </div>
     </div>
 

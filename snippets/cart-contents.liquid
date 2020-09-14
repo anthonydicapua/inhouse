@@ -1,3 +1,4 @@
+<div class="cart-contents">
 {% if cart.item_count > 0 %}
   <form action="/cart" method="post" novalidate>
     <fieldset id="cart-fieldset" class="js-cart-fieldset">
@@ -8,7 +9,7 @@
         </div>
       <div class="cart-totals">
           <div class="subtotal-line">
-            <p>{{ 'cart.filled.subtotal' | t }}</p>
+            <h3>{{ 'cart.filled.subtotal' | t }}</h3>
             <span class="price">{{ cart.total_price | money }}</span>
           </div>
         <button type="submit" name="update">{{ 'cart.filled.update' | t }}</button>
@@ -24,3 +25,4 @@
   <p class="cart-empty-text ta-center">{{ 'cart.empty.title' | t }}</p>
   <a href="/" class="button js-keep-shopping">{{ 'cart.empty.button' | t }}</a>
 {% endif %}
+</div>
