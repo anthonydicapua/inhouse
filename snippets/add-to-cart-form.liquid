@@ -20,7 +20,7 @@
 {% assign can_add_to_cart = false %}
 {% if has_selected_variant and product.selected_variant.available %}
     {% assign can_add_to_cart = true %}
-{% if elsif has_multiple_variants == false and product.available %}
+{% elsif has_multiple_variants == false and product.available %}
   {% assign can_add_to_cart = true %}
 {% endif %}
 
@@ -35,10 +35,10 @@
                 {% assign selected = product.selected_variant[option_name] %}
             {% endif %}
 
-        {% if option.name != 'Color' %}
-            {% include 'product-option-row' with option: option, option_name: option_name, type: 'select', selected: selected %}
+        {% if option.name == 'Color' %}
+            {% include 'product-option-row' with option: option, option_name: option_name, selected: selected, force_colors: true %}
                 {% else %}
-            {% include 'product-option-row' with option: option, option_name: option_name, selected: selected %}
+            {% include 'product-option-row' with option: option, option_name: option_name, type:'select', selected: selected %}
         {% endif %}
     {% endfor %}
     {% endif %}
@@ -46,9 +46,10 @@
     <input class="js-variant-id" type="hidden" name="id" value="{% if has_selected_variant %}{{ product.selected.variant.id }}{% elsif has_multiple_variants != true %}{{ product.variants.first.id }}{% endif %}">
 
     <span class="js-price" data-default-price="{{ produce.price | money }}">{{ current_variant.price | money }}</span>
-
-    <label for="Quantity">quantity</label>
-    <input type="number" id="Quantity" name="quantity" value="1" min="1">
     
-    <button type="submit" name="add" id="add-to-cart-button" {% if can_add_to_cart != true %}disabled{% endif %}>Add to cart</button>
+    <button type="submit" name="add" id="add-to-cart-button" {% if can_add_to_cart != true %}disabled{% endif %}>
+      {{ 'product.form.submit' | t }}
+      &ndash;
+      <span class="js-price" data-default-price="{{ produce.price | money }}">{{ current_variant.price | money }}</span>
+    </button>
   </form>
