@@ -72,9 +72,9 @@
     "vendor": "by {{ vendor }}"
   },
   "colors": {
-    "white": "#FFFFFF",
-    "black": "#000000",
-    "raw": "#707070"
+    "white": "FFFFFF",
+    "black": "000000",
+    "raw": "707070"
   }
   },
  "search": {
