@@ -1,8 +1,19 @@
 //  global
+@import 'global/reset';
+@import 'global/variables';
+@import 'global/functions';
+@import 'global/mixins';
+@import 'global/base';
+@import 'global/styleguide';
+@import 'global/layout';
+@import 'global/utils';
+
 
 // snippets
 @import 'snippets/mini-cart';
 
+
 // sections
+
 
 // templates
