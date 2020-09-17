@@ -10,7 +10,7 @@
   {{ content_for_header }} <!-- Header hook for plugins -->
   {{ 'application.css' | asset_url | stylesheet_tag }}
 </head>
-<body>
+<body class="template-{{ template }}">
 {% include 'header' %}
 
 {% if template != 'cart' %}

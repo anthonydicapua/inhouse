@@ -20,3 +20,8 @@ body {
     background-repeat: no-repeat;
     padding-top: $header-height + $offset-global;
 }
+
+img {
+    max-width: 100%;
+    height: auto;
+}

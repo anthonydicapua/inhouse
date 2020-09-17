@@ -1,0 +1,22 @@
+#page-collection {
+  
+    .collection-content {
+      padding-top: $offset-global;
+      grid-template-columns: repeat(12, 1fr);
+    }
+  
+    .collection-sidebar {
+      grid-column: span 2;
+      grid-row: 1;
+    }
+  
+    .product-card {
+      &:nth-of-type(odd) {
+        grid-column: 3/7;
+      }
+      &:nth-of-type(even) {
+        grid-column: 7/11;
+      }
+    }
+
+  }
