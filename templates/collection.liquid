@@ -1,9 +1,9 @@
 {% paginate collection.products by 9999 %}
 
-<div id="page-collection"></div>
+<div id="page-collection">
     {% if collection.image %}
       <div id="collection-image">
-        <img src="{{ collection.image | img_url }}" alt={{ collection.title }}">
+        <img src="{{ collection.image | img_url: 'master' }}" alt={{ collection.title }}">
       </div>
     {% endif %}
 
@@ -44,5 +44,4 @@
       {% endfor %}
   </div>
 </div>
-
 {% endpaginate %}

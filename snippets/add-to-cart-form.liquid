@@ -47,7 +47,7 @@
 
     <span class="js-price" data-default-price="{{ produce.price | money }}">{{ current_variant.price | money }}</span>
     
-    <button type="submit" name="add" id="add-to-cart-button" {% if can_add_to_cart != true %}disabled{% endif %}>
+    <button type="submit" name="add" id="add-to-cart-button" class="button-cta" {% if can_add_to_cart != true %}disabled{% endif %}>
       {{ 'product.form.submit' | t }}
       &ndash;
       <span class="js-price" data-default-price="{{ produce.price | money }}">{{ current_variant.price | money }}</span>

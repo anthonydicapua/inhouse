@@ -25,7 +25,7 @@
 <div id="page-product">
 
   <!-- begin product top -->
-  <div id="product-top">
+  <div id="product-top" class="wrapper grid">
 
     <div class="product-images">
       {% for image in product.images %}
@@ -48,7 +48,7 @@
       {% if collection %}
         <a href="{{ collection.url }}">{{ collection.title }}</a>
         {% endif %}
-      <h1>{{ product.title }}</h1>
+      <h1 class="product-title">{{ product.title }}</h1>
 
       {% include 'add-to-cart-form' %}
 
@@ -57,25 +57,25 @@
 <!-- end product top -->
 
 <!-- begin product bottom -->
-<div id="product-bottom">
+<div id="product-bottom" class="wrapper grid">
   
   <div class="info-section description">
     <h3>{{ 'product.description.title' | t }}</h3>
     <div class="product-description">{{ description }}</div>
   </div>
 
-  <div class="shipping-returns">
     <div class="info-section shipping">
-      <h4>{{ 'product.shipping.title' | t }}</h4>
+      <h3>{{ 'product.shipping.title' | t }}</h3>
       <p>{{ shipping }}</p>
     </div>
   
     <div class="info-section returns">
-      <h4>{{ 'product.returns.title' | t }}</h4>
+      <h3>{{ 'product.returns.title' | t }}</h3>
       <p>{{ returns }}</p>
     </div>
+
   </div>
-</div>
+
 
 <!-- end product bottom -->
 
