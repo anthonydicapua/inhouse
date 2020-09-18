@@ -241,7 +241,7 @@ $(document).ready(function() {
     init: function() {
       $(document).on('submit', addToCartFormSelector, ajaxify.onAddToCart)
 
-      $(document).on('click', '.js-cart-link', ajaxify.onCartButtonClick)
+      $(document).on('click', '.js-cart-link, .js-keep-shopping', ajaxify.onCartButtonClick)
     }
   };
 

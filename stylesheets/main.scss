@@ -10,13 +10,19 @@
 
 
 // snippets
-@import 'snippets/header';
-@import 'snippets/mini-cart';
 @import 'snippets/inline-icon';
+@import 'snippets/header';
 @import 'snippets/footer';
-@import 'snippets/product-card';
+@import 'snippets/quantity-picker';
+@import 'snippets/line-item';
+@import 'snippets/cart-contents';
+@import 'snippets/mini-cart';
 @import 'snippets/option-color';
-
+@import 'snippets/product-card';
+@import 'snippets/collection-list';
+@import 'snippets/product-more';
+@import 'snippets/search-form';
+@import 'snippets/error-404';
 
 // sections
 
@@ -24,3 +30,5 @@
 // templates
 @import 'templates/collection';
 @import 'templates/page-product';
+@import 'templates/cart';
+@import 'templates/search';
