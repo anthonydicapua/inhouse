@@ -6,6 +6,10 @@
     aside {
         grid-column: span 2;
         grid-row: 1;
+
+        h2 {
+          margin-bottom: $line-global;
+        }
     }
 
     .product-card {

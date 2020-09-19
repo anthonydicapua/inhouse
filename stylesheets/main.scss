@@ -2,11 +2,13 @@
 @import 'global/reset';
 @import 'global/variables';
 @import 'global/functions';
+@import 'global/fonts';
 @import 'global/mixins';
 @import 'global/base';
 @import 'global/styleguide';
 @import 'global/layout';
 @import 'global/utils';
+@import 'global/slick';
 
 
 // snippets
@@ -23,8 +25,11 @@
 @import 'snippets/product-more';
 @import 'snippets/search-form';
 @import 'snippets/error-404';
+@import 'snippets/slider-buttons';
 
 // sections
+@import 'sections/slideshow';
+@import 'sections/content';
 
 
 // templates
@@ -32,3 +37,5 @@
 @import 'templates/page-product';
 @import 'templates/cart';
 @import 'templates/search';
+@import 'templates/pages';
+@import 'templates/page-about';
