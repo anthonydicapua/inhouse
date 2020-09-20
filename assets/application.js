@@ -427,7 +427,7 @@ let
                 }
             },
             init: function() {
-                $(sectionSlideshows).each(function() {
+                $(sectionSlideshowSelector).each(function() {
                     sectionSlideshows.setup($(this))
                 })
             }
